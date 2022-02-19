@@ -42,12 +42,23 @@
 			<version>3.22.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- gRPC libs -->
 		<dependency>
 			<groupId>net.devh</groupId>
 			<artifactId>grpc-server-spring-boot-starter</artifactId>
 			<version>${grpc-springboot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-client-spring-boot-starter</artifactId>
+			<version>${grpc-springboot.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>

@@ -3,6 +3,7 @@ package br.com.samuellfa.service.impl;
 import br.com.samuellfa.domain.Product;
 import br.com.samuellfa.dto.ProductInputDTO;
 import br.com.samuellfa.dto.ProductOutputDTO;
+import br.com.samuellfa.exception.AlreadyExistException;
 import br.com.samuellfa.repository.ProductRepository;
 import br.com.samuellfa.service.IProductService;
 import br.com.samuellfa.util.ProductMapper;
@@ -21,6 +22,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductOutputDTO create(ProductInputDTO inputDTO) {
+        checkDuplicity(inputDTO.getName());
         Product product = ProductMapper.inputDTOtoEntity(inputDTO);
         var productSaved = this.productRepository.save(product);
 
@@ -40,5 +42,12 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductOutputDTO> findAll() {
         return null;
+    }
+
+    private void checkDuplicity(String name) {
+        this.productRepository.findByNameIgnoreCase(name)
+                .ifPresent(e -> {
+                    throw new AlreadyExistException(name);
+                });
     }
 }
