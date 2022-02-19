@@ -52,7 +52,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("when call with valid id a product is returned")
+    @DisplayName("when call findById with valid id a product is returned")
     void findByIdProductSuccessTest() {
         var product = new Product(1L, "product name", 10.00, 10);
 
@@ -65,7 +65,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("when call with invalid id throws NotFoundException")
+    @DisplayName("when call findById with invalid id throws NotFoundException")
     void findByIdProductNotFoundTest() {
         Long id = 1L;
 
@@ -73,5 +73,28 @@ class ProductServiceTest {
 
         Assertions.assertThatExceptionOfType(NotFoundException.class)
                 .isThrownBy(() -> productService.findById(id));
+    }
+
+    @Test
+    @DisplayName("when call delete with valid id, the product is deleted")
+    void deleteProductSuccessTest() {
+        Long id = 1L;
+        var product = new Product(id, "product name", 10.00, 10);
+
+        Mockito.when(productRepository.findById(id)).thenReturn(Optional.of(product));
+
+        Assertions.assertThatNoException()
+                .isThrownBy(() -> productService.delete(id));
+    }
+
+    @Test
+    @DisplayName("when call delete with invalid id, throws NotFoundException")
+    void deleteProductExceptionTest() {
+        Long id = 1L;
+
+        Mockito.when(productRepository.findById(id)).thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(NotFoundException.class)
+                .isThrownBy(() -> productService.delete(id));
     }
 }

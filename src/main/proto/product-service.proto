@@ -8,7 +8,7 @@ package br.com.samuellfa;
 service ProductService {
   rpc Create(ProductRequest) returns (ProductResponse);
   rpc FindById(RequestByIdRequest) returns (ProductResponse);
-  rpc Delete(RequestByIdRequest) returns (ProductResponse);
+  rpc Delete(RequestByIdRequest) returns (EmptyResponse);
   rpc FindAll(EmptyRequest) returns (ProductResponseList);
 }
 
@@ -30,6 +30,8 @@ message RequestByIdRequest {
 }
 
 message EmptyRequest {}
+
+message EmptyResponse {}
 
 message ProductResponseList {
   repeated ProductResponse products = 1;

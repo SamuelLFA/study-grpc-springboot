@@ -1,9 +1,6 @@
 package br.com.samuellfa.resources;
 
-import br.com.samuellfa.ProductRequest;
-import br.com.samuellfa.ProductResponse;
-import br.com.samuellfa.ProductServiceGrpc;
-import br.com.samuellfa.RequestByIdRequest;
+import br.com.samuellfa.*;
 import br.com.samuellfa.dto.ProductInputDTO;
 import br.com.samuellfa.dto.ProductOutputDTO;
 import br.com.samuellfa.service.IProductService;
@@ -50,6 +47,13 @@ public class ProductResource extends ProductServiceGrpc.ProductServiceImplBase {
                 .build();
 
         responseObserver.onNext(productResponse);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void delete(RequestByIdRequest request, StreamObserver<EmptyResponse> responseObserver) {
+        productService.delete(request.getId());
+        responseObserver.onNext(EmptyResponse.newBuilder().build());
         responseObserver.onCompleted();
     }
 }

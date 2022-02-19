@@ -40,7 +40,9 @@ public class ProductService implements IProductService {
 
     @Override
     public void delete(Long id) {
-
+        var product = this.productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(id));
+        this.productRepository.delete(product);
     }
 
     @Override
