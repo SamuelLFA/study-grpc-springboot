@@ -1,9 +1,6 @@
 package br.com.samuellfa.resources;
 
-import br.com.samuellfa.ProductRequest;
-import br.com.samuellfa.ProductResponse;
-import br.com.samuellfa.ProductServiceGrpc;
-import br.com.samuellfa.RequestByIdRequest;
+import br.com.samuellfa.*;
 import io.grpc.StatusRuntimeException;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.assertj.core.api.Assertions;
@@ -16,6 +13,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
+
+import static org.assertj.core.api.Assertions.tuple;
 
 @SpringBootTest
 @EnableAutoConfiguration
@@ -110,5 +109,21 @@ class ProductResourceTest {
         Assertions.assertThatExceptionOfType(StatusRuntimeException.class)
                 .isThrownBy(() -> serviceBlockingStub.findById(request))
                 .withMessage("NOT_FOUND: 100 does not exist.");
+    }
+
+    @Test
+    @DisplayName("when products exist, a list of product is returned")
+    public void findAllSuccessTest() {
+        var request = EmptyRequest.newBuilder()
+                .build();
+        ProductResponseList productResponseList = serviceBlockingStub.findAll(request);
+        Assertions.assertThat(productResponseList).isInstanceOf(ProductResponseList.class);
+        Assertions.assertThat(productResponseList.getProductsCount()).isEqualTo(2);
+        Assertions.assertThat(productResponseList.getProductsList())
+                .extracting("id", "name", "price", "quantityInStock")
+                .contains(
+                        tuple(1L, "Product A", 10.99, 10),
+                        tuple(2L, "Product B", 10.99, 10)
+                );
     }
 }

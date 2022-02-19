@@ -14,7 +14,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.tuple;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -96,5 +99,23 @@ class ProductServiceTest {
 
         Assertions.assertThatExceptionOfType(NotFoundException.class)
                 .isThrownBy(() -> productService.delete(id));
+    }
+
+    @Test
+    @DisplayName("when call findAll return a list of products")
+    void findAllProductSuccessTest() {
+        var list = List.of(
+                new Product(1L, "product name", 10.00, 10),
+                new Product(2L, "other product name", 20.00, 20));
+
+        Mockito.when(productRepository.findAll()).thenReturn(list);
+        var productOutputDTOList = productService.findAll();
+
+        Assertions.assertThat(productOutputDTOList)
+                .extracting("id", "name", "price", "quantityInStock")
+                .contains(
+                        tuple(1L, "product name", 10.00, 10),
+                        tuple(2L, "other product name", 20.00, 20)
+                );
     }
 }

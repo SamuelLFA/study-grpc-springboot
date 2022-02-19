@@ -11,6 +11,7 @@ import br.com.samuellfa.util.ProductMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -47,7 +48,11 @@ public class ProductService implements IProductService {
 
     @Override
     public List<ProductOutputDTO> findAll() {
-        return null;
+        var products = this.productRepository.findAll();
+        return products
+                .stream()
+                .map(ProductMapper::entityToOutputDTO)
+                .collect(Collectors.toList());
     }
 
     private void checkDuplicity(String name) {

@@ -7,6 +7,9 @@ import br.com.samuellfa.service.IProductService;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @GrpcService
 public class ProductResource extends ProductServiceGrpc.ProductServiceImplBase {
 
@@ -54,6 +57,27 @@ public class ProductResource extends ProductServiceGrpc.ProductServiceImplBase {
     public void delete(RequestByIdRequest request, StreamObserver<EmptyResponse> responseObserver) {
         productService.delete(request.getId());
         responseObserver.onNext(EmptyResponse.newBuilder().build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void findAll(EmptyRequest request, StreamObserver<ProductResponseList> responseObserver) {
+        List<ProductOutputDTO> outputDTOs = productService.findAll();
+        List<ProductResponse> productResponseList = outputDTOs.stream()
+                .map(productOutputDTO ->
+                        ProductResponse.newBuilder()
+                                .setId(productOutputDTO.getId())
+                                .setName(productOutputDTO.getName())
+                                .setPrice(productOutputDTO.getPrice())
+                                .setQuantityInStock(productOutputDTO.getQuantityInStock())
+                                .build())
+                .collect(Collectors.toList());
+
+        ProductResponseList responseList = ProductResponseList.newBuilder()
+                .addAllProducts(productResponseList)
+                .build();
+
+        responseObserver.onNext(responseList);
         responseObserver.onCompleted();
     }
 }
