@@ -1,0 +1,44 @@
+package br.com.samuellfa.service.impl;
+
+import br.com.samuellfa.domain.Product;
+import br.com.samuellfa.dto.ProductInputDTO;
+import br.com.samuellfa.dto.ProductOutputDTO;
+import br.com.samuellfa.repository.ProductRepository;
+import br.com.samuellfa.service.IProductService;
+import br.com.samuellfa.util.ProductMapper;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ProductService implements IProductService {
+
+    private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Override
+    public ProductOutputDTO create(ProductInputDTO inputDTO) {
+        Product product = ProductMapper.inputDTOtoEntity(inputDTO);
+        var productSaved = this.productRepository.save(product);
+
+        return ProductMapper.entityToOutputDTO(productSaved);
+    }
+
+    @Override
+    public ProductOutputDTO findById(Long id) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
+
+    @Override
+    public List<ProductOutputDTO> findAll() {
+        return null;
+    }
+}
