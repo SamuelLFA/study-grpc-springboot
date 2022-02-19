@@ -4,6 +4,7 @@ import br.com.samuellfa.domain.Product;
 import br.com.samuellfa.dto.ProductInputDTO;
 import br.com.samuellfa.dto.ProductOutputDTO;
 import br.com.samuellfa.exception.AlreadyExistException;
+import br.com.samuellfa.exception.NotFoundException;
 import br.com.samuellfa.repository.ProductRepository;
 import br.com.samuellfa.service.IProductService;
 import br.com.samuellfa.util.ProductMapper;
@@ -31,7 +32,10 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductOutputDTO findById(Long id) {
-        return null;
+        var product = this.productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(id));
+
+        return ProductMapper.entityToOutputDTO(product);
     }
 
     @Override
